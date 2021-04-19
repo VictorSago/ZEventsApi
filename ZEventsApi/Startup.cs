@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
+using ZEventsApi.Data;
 
 namespace ZEventsApi
 {
@@ -32,6 +34,9 @@ namespace ZEventsApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZEventsApi", Version = "v1" });
             });
+
+            services.AddDbContext<EventsApiContext>(options =>
+                    options.UseSqlite(Configuration.GetConnectionString("EventsApiSQLite")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
