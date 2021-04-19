@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ZEventsApi.Data;
+using ZEventsApi.Models.DTO;
 using ZEventsApi.Models.Entities;
 
 namespace ZEventsApi.Controllers
@@ -14,19 +12,22 @@ namespace ZEventsApi.Controllers
     [ApiController]
     public class EventDaysController : ControllerBase
     {
-        private readonly EventsApiContext _dbContext;
+        private readonly EventRepo _eventDayRepo;
+        private readonly IMapper _mapper;
 
-        public EventDaysController(EventsApiContext context)
+        public EventDaysController(EventsApiContext context, IMapper mapper)
         {
-            _dbContext = context;
+            _eventDayRepo = new EventRepo(context);
+            _mapper = mapper;
         }
 
         // GET: api/EventDays
-        // [HttpGet]
-        // public async Task<ActionResult<IEnumerable<EventDay>>> GetEventDay()
-        // {
-        //     return await _dbContext.EventDay.ToListAsync();
-        // }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<EventDay>>> GetAllEvents(bool includeLectures = false)
+        {
+            var dto = _mapper.Map<EventDayDto>(await _eventDayRepo.GetAllAsync(includeLectures));
+            return Ok(dto);
+        }
 
         
     }

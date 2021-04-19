@@ -37,6 +37,8 @@ namespace ZEventsApi
 
             services.AddDbContext<EventsApiContext>(options =>
                     options.UseSqlite(Configuration.GetConnectionString("EventsApiSQLite")));
+            
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
