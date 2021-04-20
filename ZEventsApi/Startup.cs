@@ -29,7 +29,10 @@ namespace ZEventsApi
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers(opt => opt.ReturnHttpNotAcceptable = true)
+                            .AddNewtonsoftJson()
+                            .AddXmlDataContractSerializerFormatters();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZEventsApi", Version = "v1" });

@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using ZEventsApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ZEventsApi.Data
 {
@@ -26,6 +27,29 @@ namespace ZEventsApi.Data
                                      await _dbContext.EventDays
                                                     .Include(e => e.Location)
                                                     .ToListAsync();
+        }
+
+        public async Task<EventDay> GetEventAsync(string name, bool includeLectures)
+        {
+            // TODO: Validate name
+
+            var query = _dbContext.EventDays.Include(e => e.Location).AsQueryable();
+
+            if (includeLectures)
+            {
+                query = query.Include(e => e.Lectures);
+            }
+            return await query.FirstOrDefaultAsync(e => e.Name == name);
+        }
+
+        public async Task AddAsync<T>(T added)
+        {
+            await _dbContext.AddAsync(added);
+        }
+
+        public async Task<bool> SaveAsync()
+        {
+            return (await _dbContext.SaveChangesAsync()) >= 0;
         }
     }
 }
