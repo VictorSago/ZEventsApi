@@ -11,6 +11,8 @@ namespace ZEventsApi.Models.DTO
         [StringLength(10)]
         public string Name { get; set; }
         public DateTime EventDate { get; set; }
+
+        [Range(0, 200)]
         public int Length { get; set; }
 
         public string LocationAddress { get; set; }
@@ -19,7 +21,7 @@ namespace ZEventsApi.Models.DTO
         public string LocationPostalCode { get; set; }
         public string LocationCountry { get; set; }
 
-        public ICollection<Lecture> Lectures { get; set; }
+        public ICollection<LectureDto> Lectures { get; set; }
 
     }
 }

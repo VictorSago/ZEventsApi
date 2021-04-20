@@ -39,7 +39,7 @@ namespace ZEventsApi.Data
             {
                 query = query.Include(e => e.Lectures);
             }
-            return await query.FirstOrDefaultAsync(e => e.Name == name);
+            return await query.FirstOrDefaultAsync(e => e.Name.Equals(name));
         }
 
         public async Task AddAsync<T>(T added)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using ZEventsApi.Data;
 using ZEventsApi.Models.DTO;
@@ -40,14 +41,13 @@ namespace ZEventsApi.Controllers
                 return BadRequest();
             }
 
-            var result = await _eventDayRepo.GetEventAsync(name, includeLectures);
-
-            if (result is null)
+            var eventday = await _eventDayRepo.GetEventAsync(name, includeLectures);
+            if (eventday is null)
             {
                 return NotFound();
             }
 
-            var dto = _mapper.Map<EventDayDto>(result);
+            var dto = _mapper.Map<EventDayDto>(eventday);
 
             return Ok(dto);
         }
@@ -72,6 +72,58 @@ namespace ZEventsApi.Controllers
             else
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPut("{name}")]
+        public async Task<ActionResult<EventDayDto>> PutEvent(string name, EventDayDto dto)
+        {
+            var eventday = await _eventDayRepo.GetEventAsync(name, false);
+            if (eventday is null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+
+            _mapper.Map(dto, eventday);
+
+            //_eventDayRepo.Update(eventday);
+            if (await _eventDayRepo.SaveAsync())
+            {
+                return Ok(_mapper.Map<EventDayDto>(eventday));
+            }
+            else
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPatch("{name}")]
+        public async Task<ActionResult<EventDayDto>> PatchEvent(string name, JsonPatchDocument<EventDayDto> patchDocument)
+        {
+            var eventday = await _eventDayRepo.GetEventAsync(name, true);
+            if (eventday is null)
+            {
+                return NotFound();
+            }
+
+            var dto = _mapper.Map<EventDayDto>(eventday);
+
+            patchDocument.ApplyTo(dto, ModelState);
+
+            if (!TryValidateModel(dto))
+            {
+                return BadRequest(ModelState);
+            }
+
+            _mapper.Map(dto, eventday);
+
+            if (await _eventDayRepo.SaveAsync())
+            {
+                return Ok(_mapper.Map<EventDayDto>(dto));
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }
