@@ -25,8 +25,9 @@ namespace ZEventsApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventDay>>> GetAllEvents(bool includeLectures = false)
         {
-            var dto = _mapper.Map<EventDayDto>(await _eventDayRepo.GetAllAsync(includeLectures));
-            return Ok(dto);
+            var result = await _eventDayRepo.GetAllAsync(includeLectures);
+            // var dto = _mapper.Map<EventDayDto>(result);
+            return Ok(result);
         }
 
         

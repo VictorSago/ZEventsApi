@@ -29,7 +29,7 @@ namespace ZEventsApi
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ZEventsApi", Version = "v1" });
@@ -38,7 +38,7 @@ namespace ZEventsApi
             services.AddDbContext<EventsApiContext>(options =>
                     options.UseSqlite(Configuration.GetConnectionString("EventsApiSQLite")));
             
-            services.AddAutoMapper(typeof(Startup));
+            services.AddAutoMapper(typeof(MapperProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

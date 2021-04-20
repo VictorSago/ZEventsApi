@@ -18,12 +18,12 @@ namespace ZEventsApi.Data
 
         public async Task<IEnumerable<EventDay>> GetAllAsync(bool includeLectures)
         {
-            return includeLectures ? await _dbContext.EventDay
+            return includeLectures ? await _dbContext.EventDays
                                                     .Include(e => e.Location)
                                                     .Include(e => e.Lectures)
                                                     .ThenInclude(e => e.Speaker)
                                                     .ToListAsync() :
-                                     await _dbContext.EventDay
+                                     await _dbContext.EventDays
                                                     .Include(e => e.Location)
                                                     .ToListAsync();
         }
