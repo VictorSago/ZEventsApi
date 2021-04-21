@@ -51,5 +51,14 @@ namespace ZEventsApi.Data
         {
             return (await _dbContext.SaveChangesAsync()) >= 0;
         }
+
+        public async Task<Lecture[]> GetAllLecturesAsync(string name, bool includeSpeakers)
+        {
+            var query = _dbContext.Lectures.AsQueryable();
+            query = includeSpeakers ? query.Include(l => l.Speaker) : query;
+            query = query.Where(l => l.EventDay.Name.ToUpper().Equals(name.ToUpper()));
+
+            return await query.ToArrayAsync();
+        }
     }
 }
